@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, button, div, h1, text)
+import Html exposing (Html, button, div, h1, h2, span, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 
@@ -32,19 +32,10 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "container p-10" ]
-        [ h1 [ class "text-xl font-black" ] [ text "Counter" ]
-        , button
-            [ onClick Increment
-            , class "py-2 px-4 bg-green-500 text-white rounded-lg"
-            ]
-            [ text "+1" ]
-        , div [ class "py-10 px-4 bg-blue-500 text-white rounded-lg inline-block" ] [ text <| String.fromInt model.count ]
-        , button
-            [ onClick Decrement
-            , class "py-2 px-4 bg-red-400 text-white rounded-lg"
-            ]
-            [ text "-1" ]
+    div [ class "container p-10 dark:text-white" ]
+        [ h1 [ class "text-3xl font-black tracking-tight pb-4" ] [ text "Covid19 in Hamburg" ]
+        , h2 [ class "text-3x1 font-extrabold tracking-tight sm:text-4x1 text-indigo-600" ] [ text "New Infections" ]
+        , h2 [ class "text-3x1 text-gray-600 font-light tracking-tight sm:text-4x1" ] [ text "Today" ]
         ]
 
 
