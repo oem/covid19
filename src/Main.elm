@@ -48,7 +48,8 @@ viewToday : Int -> Html Msg
 viewToday newCases =
     div []
         [ h3 [] [ text "Today" ]
-        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16" ] [ text <| String.fromInt newCases ]
+        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16" ]
+            [ text <| String.fromInt newCases ]
         ]
 
 
@@ -56,7 +57,8 @@ viewWeek : Int -> Html Msg
 viewWeek newCases =
     div []
         [ h3 [] [ text "seven days" ]
-        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16" ] [ text <| String.fromInt newCases ]
+        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16" ]
+            [ text <| String.fromInt newCases ]
         ]
 
 
@@ -64,7 +66,8 @@ viewAll : Int -> Html Msg
 viewAll newCases =
     div []
         [ h3 [] [ text "total" ]
-        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16" ] [ text <| String.fromInt newCases ]
+        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16" ]
+            [ text <| String.fromInt newCases ]
         ]
 
 
