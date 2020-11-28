@@ -32,23 +32,39 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "container p-10 mx-auto dark:text-white" ]
+    div [ class "container p-2 pt-10 mx-auto" ]
         [ h1 [ class "text-3xl font-black tracking-tight pb-4" ] [ text "Covid19 in Hamburg" ]
         , h2 [ class "text-3xl font-extrabold tracking-tight sm:text-4x1 text-red-500 pb-1" ] [ text "New Infections" ]
         , div
             [ class "grid grid-cols-1 md:grid-cols-3 gap-4 uppercase text-2xl md:text-xl" ]
-            [ viewInfected "today"
-            , viewInfected "last seven days"
-            , viewInfected "since outbreak"
+            [ viewToday 356
+            , viewWeek 1156
+            , viewAll 112872
             ]
         ]
 
 
-viewInfected : String -> Html Msg
-viewInfected headline =
+viewToday : Int -> Html Msg
+viewToday newCases =
     div []
-        [ h3 [] [ text headline ]
-        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16" ] [ text "+356" ]
+        [ h3 [] [ text "Today" ]
+        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16" ] [ text <| String.fromInt newCases ]
+        ]
+
+
+viewWeek : Int -> Html Msg
+viewWeek newCases =
+    div []
+        [ h3 [] [ text "seven days" ]
+        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16" ] [ text <| String.fromInt newCases ]
+        ]
+
+
+viewAll : Int -> Html Msg
+viewAll newCases =
+    div []
+        [ h3 [] [ text "total" ]
+        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16" ] [ text <| String.fromInt newCases ]
         ]
 
 
