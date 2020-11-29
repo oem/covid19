@@ -86,7 +86,7 @@ view model =
 viewToday : Int -> Html Msg
 viewToday newCases =
     div []
-        [ h3 [ class "tracking-widest" ] [ text "Today" ]
+        [ viewColumnHeadline "today"
         , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
             [ text <| String.fromInt newCases ]
         ]
@@ -95,12 +95,10 @@ viewToday newCases =
 viewWeek : Int -> Html Msg
 viewWeek newCases =
     div []
-        [ h3 [ class "tracking-widest" ] [ text "seven days" ]
+        [ viewColumnHeadline "seven days"
         , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40" ]
-            [ span [ class "flex items-center" ]
-                [ text <| String.fromInt newCases ]
-            , span [ class "pl-3 font-thin flex items-center" ]
-                [ text "/ 950" ]
+            [ span [ class "flex items-center" ] [ text <| String.fromInt newCases ]
+            , span [ class "pl-3 font-thin flex items-center" ] [ text "/ 950" ]
             ]
         ]
 
@@ -108,7 +106,11 @@ viewWeek newCases =
 viewAll : String -> Html Msg
 viewAll allInfected =
     div []
-        [ h3 [ class "tracking-widest" ] [ text "total" ]
-        , div [ class "bg-gray-300 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40" ]
-            [ text allInfected ]
+        [ viewColumnHeadline "total"
+        , div [ class "bg-gray-300 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40" ] [ text allInfected ]
         ]
+
+
+viewColumnHeadline : String -> Html Msg
+viewColumnHeadline headline =
+    h3 [ class "tracking-widest" ] [ text headline ]
