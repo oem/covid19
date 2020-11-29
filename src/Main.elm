@@ -16,11 +16,6 @@ type alias Model =
     }
 
 
-type Msg
-    = Increment
-    | Decrement
-
-
 
 -- INIT
 
@@ -43,6 +38,11 @@ main =
 
 
 -- UPDATE
+
+
+type Msg
+    = Increment
+    | Decrement
 
 
 update : Msg -> Model -> Model
@@ -70,6 +70,10 @@ view model =
 
                 [] ->
                     ""
+
+        lastSeven : Int
+        lastSeven =
+            List.sum <| List.take 7 model.new
     in
     div [ class "container p-2 md:p-4 mx-auto max-w-6xl" ]
         [ h1 [ class "text-3xl font-black tracking-tight pb-4 pt-14" ] [ text "Covid19 in Hamburg" ]
@@ -77,7 +81,7 @@ view model =
         , div
             [ class "grid grid-cols-1 md:grid-cols-3 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
             [ viewToday 356
-            , viewWeek 1156
+            , viewWeek lastSeven
             , viewAll allInfected
             ]
         ]
@@ -93,11 +97,11 @@ viewToday newCases =
 
 
 viewWeek : Int -> Html Msg
-viewWeek newCases =
+viewWeek lastSeven =
     div []
         [ viewColumnHeadline "seven days"
         , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40" ]
-            [ span [ class "flex items-center" ] [ text <| String.fromInt newCases ]
+            [ span [ class "flex items-center" ] [ text <| String.fromInt lastSeven ]
             , span [ class "pl-3 font-thin flex items-center" ] [ text "/ 950" ]
             ]
         ]
