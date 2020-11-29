@@ -154,8 +154,8 @@ viewSources =
     div [ class "pb-10" ]
         [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-black pb-1" ] [ text "Sources" ]
         , p []
-            [ text "The datasource for this dashboard is "
-            , a [ class "font-bold", href "https://github.com/oem/Hamburg.jl" ] [ text "github.com/oem/Hamburg.jl" ]
-            , text ", which in turn gathers the data from the RKI and Hamburg.de. See the github page for more detailed information on the datasources."
+            [ text "The source of the data for this dashboard is "
+            , a [ class "font-extrabold", href "https://github.com/oem/Hamburg.jl" ] [ text "github.com/oem/Hamburg.jl" ]
+            , text ", which in turn gathers the data from the RKI and Hamburg.de. See the github page for more detailed information on the data sources."
             ]
         ]
