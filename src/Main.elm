@@ -62,8 +62,9 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ class "container p-2 md:p-4 mx-auto max-w-6xl" ]
-        [ h1 [ class "text-3xl font-black tracking-tight pb-4 pt-14" ] [ text "Covid19 in Hamburg" ]
+        [ h1 [ class "text-3xl font-black tracking-tight pb-4 pt-14" ] [ text "COVID-19 in Hamburg" ]
         , viewInfected model
+        , viewDeaths model
         ]
 
 
@@ -83,11 +84,11 @@ viewInfected model =
         lastSeven =
             List.sum <| List.take 7 model.new
     in
-    div []
+    div [ class "pb-10" ]
         [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-red-500 pb-1" ] [ text "New Infections" ]
         , div
             [ class "grid grid-cols-1 md:grid-cols-3 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
-            [ viewToday 356
+            [ viewToday <| List.head model.new
             , viewWeek lastSeven
             , viewAll allInfected
             ]
@@ -96,12 +97,21 @@ viewInfected model =
         ]
 
 
-viewToday : Int -> Html Msg
+viewToday : Maybe Int -> Html Msg
 viewToday newCases =
+    let
+        latest =
+            case newCases of
+                Just value ->
+                    String.fromInt value
+
+                Nothing ->
+                    ""
+    in
     div []
         [ viewColumnHeadline "today"
         , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
-            [ text <| String.fromInt newCases ]
+            [ text latest ]
         ]
 
 
@@ -127,3 +137,10 @@ viewAll allInfected =
 viewColumnHeadline : String -> Html Msg
 viewColumnHeadline headline =
     h3 [ class "tracking-widest" ] [ text headline ]
+
+
+viewDeaths : Model -> Html Msg
+viewDeaths model =
+    div []
+        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-red-500 pb-1" ] [ text "Deaths due to COVID-19" ]
+        ]
