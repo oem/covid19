@@ -32,11 +32,11 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "container p-2 pt-10 mx-auto" ]
+    div [ class "container p-2 md:p-4 pt-10 mx-auto max-w-6xl" ]
         [ h1 [ class "text-3xl font-black tracking-tight pb-4" ] [ text "Covid19 in Hamburg" ]
         , h2 [ class "text-3xl font-extrabold tracking-tight sm:text-4x1 text-red-500 pb-1" ] [ text "New Infections" ]
         , div
-            [ class "grid grid-cols-1 md:grid-cols-3 gap-4 uppercase text-2xl md:text-xl" ]
+            [ class "grid grid-cols-1 md:grid-cols-3 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
             [ viewToday 356
             , viewWeek 1156
             , viewAll 112872
@@ -48,7 +48,7 @@ viewToday : Int -> Html Msg
 viewToday newCases =
     div []
         [ h3 [] [ text "Today" ]
-        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16" ]
+        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
             [ text <| String.fromInt newCases ]
         ]
 
@@ -57,8 +57,12 @@ viewWeek : Int -> Html Msg
 viewWeek newCases =
     div []
         [ h3 [] [ text "seven days" ]
-        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16" ]
-            [ text <| String.fromInt newCases ]
+        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40" ]
+            [ span [ class "flex items-center" ]
+                [ text <| String.fromInt newCases ]
+            , span [ class "pl-3 font-thin flex items-center" ]
+                [ text "/ 950" ]
+            ]
         ]
 
 
@@ -66,7 +70,7 @@ viewAll : Int -> Html Msg
 viewAll newCases =
     div []
         [ h3 [] [ text "total" ]
-        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16" ]
+        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40" ]
             [ text <| String.fromInt newCases ]
         ]
 
