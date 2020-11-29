@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, button, div, h1, h2, h3, span, text)
+import Html exposing (Html, button, div, h1, h2, h3, p, span, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 
@@ -61,6 +61,14 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
+    div [ class "container p-2 md:p-4 mx-auto max-w-6xl" ]
+        [ h1 [ class "text-3xl font-black tracking-tight pb-4 pt-14" ] [ text "Covid19 in Hamburg" ]
+        , viewInfected model
+        ]
+
+
+viewInfected : Model -> Html Msg
+viewInfected model =
     let
         allInfected : String
         allInfected =
@@ -75,15 +83,16 @@ view model =
         lastSeven =
             List.sum <| List.take 7 model.new
     in
-    div [ class "container p-2 md:p-4 mx-auto max-w-6xl" ]
-        [ h1 [ class "text-3xl font-black tracking-tight pb-4 pt-14" ] [ text "Covid19 in Hamburg" ]
-        , h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-red-500 pb-1" ] [ text "New Infections" ]
+    div []
+        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-red-500 pb-1" ] [ text "New Infections" ]
         , div
             [ class "grid grid-cols-1 md:grid-cols-3 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
             [ viewToday 356
             , viewWeek lastSeven
             , viewAll allInfected
             ]
+        , p [ class "text-xs pt-1 pb-1" ]
+            [ text "* The goverment will need to enact policies like lockdowns after this threshold." ]
         ]
 
 
@@ -102,7 +111,7 @@ viewWeek lastSeven =
         [ viewColumnHeadline "seven days"
         , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40" ]
             [ span [ class "flex items-center" ] [ text <| String.fromInt lastSeven ]
-            , span [ class "pl-3 font-thin flex items-center" ] [ text "/ 950" ]
+            , span [ class "pl-3 font-thin flex items-center" ] [ text "/ 950*" ]
             ]
         ]
 
@@ -111,7 +120,7 @@ viewAll : String -> Html Msg
 viewAll allInfected =
     div []
         [ viewColumnHeadline "total"
-        , div [ class "bg-gray-300 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40" ] [ text allInfected ]
+        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40" ] [ text allInfected ]
         ]
 
 
