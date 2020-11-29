@@ -1,8 +1,8 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, button, div, h1, h2, h3, p, span, text)
-import Html.Attributes exposing (class)
+import Html exposing (Html, a, button, div, h1, h2, h3, p, span, text)
+import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
 
 
@@ -60,6 +60,7 @@ view model =
         , viewInfected model
         , viewHospitalizations model
         , viewDeaths model
+        , viewSources
         ]
 
 
@@ -145,4 +146,16 @@ viewDeaths : Model -> Html Msg
 viewDeaths model =
     div []
         [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-red-500 pb-1" ] [ text "Deaths" ]
+        ]
+
+
+viewSources : Html Msg
+viewSources =
+    div [ class "pb-10" ]
+        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-black pb-1" ] [ text "Sources" ]
+        , p []
+            [ text "The datasource for this dashboard is "
+            , a [ class "font-bold", href "https://github.com/oem/Hamburg.jl" ] [ text "github.com/oem/Hamburg.jl" ]
+            , text ", which in turn gathers the data from the RKI and Hamburg.de. See the github page for more detailed information on the datasources."
+            ]
         ]
