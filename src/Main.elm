@@ -17,7 +17,7 @@ type alias Model =
 
 
 
--- INIT
+-- MAIN
 
 
 initialModel : Model
@@ -41,18 +41,12 @@ main =
 
 
 type Msg
-    = Increment
-    | Decrement
+    = DataLoaded
 
 
 update : Msg -> Model -> Model
 update msg model =
-    case msg of
-        Increment ->
-            model
-
-        Decrement ->
-            model
+    model
 
 
 
@@ -64,6 +58,7 @@ view model =
     div [ class "container p-2 md:p-4 mx-auto max-w-6xl" ]
         [ h1 [ class "text-3xl font-black tracking-tight pb-4 pt-14" ] [ text "COVID-19 in Hamburg" ]
         , viewInfected model
+        , viewHospitalizations model
         , viewDeaths model
         ]
 
@@ -139,8 +134,15 @@ viewColumnHeadline headline =
     h3 [ class "tracking-widest" ] [ text headline ]
 
 
+viewHospitalizations : Model -> Html Msg
+viewHospitalizations model =
+    div []
+        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-red-500 pb-1" ] [ text "Hospitalizations" ]
+        ]
+
+
 viewDeaths : Model -> Html Msg
 viewDeaths model =
     div []
-        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-red-500 pb-1" ] [ text "Deaths due to COVID-19" ]
+        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-red-500 pb-1" ] [ text "Deaths" ]
         ]
