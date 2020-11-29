@@ -13,6 +13,9 @@ import Html.Events exposing (onClick)
 type alias Model =
     { new : List Int
     , total : List Int
+    , deaths : List (Maybe Int)
+    , hopsitalizations : List (Maybe Int)
+    , intensivecare : List (Maybe Int)
     }
 
 
@@ -24,6 +27,9 @@ initialModel : Model
 initialModel =
     { new = [ 104, 300, 252, 360, 363, 392, 237, 172, 433, 362, 659, 246 ]
     , total = [ 24710, 24606, 24306, 24054, 23694 ]
+    , deaths = [ Just 281, Just 281, Just 281, Just 281 ]
+    , hopsitalizations = [ Just 312, Just 312, Just 309, Just 314, Just 312 ]
+    , intensivecare = [ Just 79, Just 79, Just 79, Just 79, Just 88 ]
     }
 
 
@@ -80,7 +86,7 @@ viewInfected model =
         lastSeven =
             List.sum <| List.take 7 model.new
     in
-    div [ class "pb-10" ]
+    div [ class "pb-8" ]
         [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-red-500 pb-1" ] [ text "New Infections" ]
         , div
             [ class "grid grid-cols-1 md:grid-cols-3 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
@@ -137,21 +143,52 @@ viewColumnHeadline headline =
 
 viewHospitalizations : Model -> Html Msg
 viewHospitalizations model =
+    div [ class "pb-8" ]
+        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-indigo-500 pb-1" ] [ text "Hospitalizations" ]
+        , div
+            [ class "grid grid-cols-1 md:grid-cols-2 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
+            [ viewIntensivecare 12
+            , viewTotalHospitalizations 34
+            ]
+        ]
+
+
+viewTotalHospitalizations : Int -> Html Msg
+viewTotalHospitalizations total =
     div []
-        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-red-500 pb-1" ] [ text "Hospitalizations" ]
+        [ viewColumnHeadline "total"
+        , div [ class "bg-purple-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
+            [ text "34" ]
+        ]
+
+
+viewIntensivecare : Int -> Html Msg
+viewIntensivecare total =
+    div []
+        [ viewColumnHeadline "intensivecare"
+        , div [ class "bg-pink-400 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
+            [ text "34" ]
         ]
 
 
 viewDeaths : Model -> Html Msg
 viewDeaths model =
-    div []
-        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-red-500 pb-1" ] [ text "Deaths" ]
+    div [ class "pb-8" ]
+        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-gray-500 pb-1" ] [ text "Deaths" ]
+        , div
+            [ class "grid grid-cols-1 md:grid-cols-1 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
+            [ div []
+                [ viewColumnHeadline "total"
+                , div [ class "bg-gray-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
+                    [ text "34" ]
+                ]
+            ]
         ]
 
 
 viewSources : Html Msg
 viewSources =
-    div [ class "pb-10" ]
+    div [ class "pb-8" ]
         [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-black pb-1" ] [ text "Sources" ]
         , p []
             [ text "The source of the data for this dashboard is "
