@@ -61,7 +61,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "container p-2 md:p-4 mx-auto max-w-6xl" ]
+    div [ class "container p-4 md:p-6 mx-auto max-w-6xl" ]
         [ h1 [ class "text-3xl font-black tracking-tight pb-4 pt-14" ] [ text "COVID-19 in Hamburg" ]
         , viewInfected model
         , viewHospitalizations model
@@ -87,7 +87,7 @@ viewInfected model =
             List.sum <| List.take 7 model.new
     in
     div [ class "pb-8" ]
-        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-red-500 pb-1" ] [ text "New Infections" ]
+        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 pb-1" ] [ text "New Infections" ]
         , div
             [ class "grid grid-cols-1 md:grid-cols-3 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
             [ viewToday <| List.head model.new
@@ -105,15 +105,31 @@ viewToday newCases =
         latest =
             case newCases of
                 Just value ->
-                    String.fromInt value
+                    value
 
                 Nothing ->
-                    ""
+                    0
+
+        severity =
+            if latest > 400 then
+                "bg-red-500"
+
+            else if latest > 250 then
+                "bg-gradient-to-b from-red-400 to-red-500"
+
+            else if latest > 90 then
+                "bg-gradient-to-b from-yellow-400 to-yellow-500"
+
+            else if latest > 30 then
+                "bg-gradient-to-b from-yellow-300 to-yellow-400"
+
+            else
+                "bg-gray-300"
     in
     div []
         [ viewColumnHeadline "today"
-        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
-            [ text latest ]
+        , div [ class (severity ++ " text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40") ]
+            [ text (String.fromInt latest) ]
         ]
 
 
@@ -144,7 +160,7 @@ viewColumnHeadline headline =
 viewHospitalizations : Model -> Html Msg
 viewHospitalizations model =
     div [ class "pb-8" ]
-        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-indigo-500 pb-1" ] [ text "Hospitalizations" ]
+        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 pb-1" ] [ text "Hospitalizations" ]
         , div
             [ class "grid grid-cols-1 md:grid-cols-2 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
             [ viewIntensivecare 12
@@ -174,12 +190,12 @@ viewIntensivecare total =
 viewDeaths : Model -> Html Msg
 viewDeaths model =
     div [ class "pb-8" ]
-        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-gray-500 pb-1" ] [ text "Deaths" ]
+        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 pb-1" ] [ text "Deaths" ]
         , div
             [ class "grid grid-cols-1 md:grid-cols-1 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
             [ div []
                 [ viewColumnHeadline "total"
-                , div [ class "bg-gray-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
+                , div [ class "bg-gray-600 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
                     [ text "34" ]
                 ]
             ]
