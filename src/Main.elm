@@ -91,8 +91,8 @@ viewInfected model =
         allInfected : String
         allInfected =
             case model.total of
-                latest :: older ->
-                    String.fromInt latest
+                newest :: older ->
+                    String.fromInt newest
 
                 [] ->
                     ""
@@ -141,7 +141,7 @@ viewToday newCases =
                 "bg-gradient-to-b from-yellow-300 to-yellow-400"
 
             else
-                "bg-gray-300"
+                "bg-gray-400"
     in
     div []
         [ viewColumnHeadline "today"
@@ -152,9 +152,27 @@ viewToday newCases =
 
 viewWeek : Int -> Html Msg
 viewWeek lastSeven =
+    let
+        severity : String
+        severity =
+            if lastSeven > 1400 then
+                "bg-red-600"
+
+            else if lastSeven > 900 then
+                "bg-red-500"
+
+            else if lastSeven > 700 then
+                "bg-gradient-to-b from-red-400 to-red-500"
+
+            else if lastSeven > 300 then
+                "bg-gradient-to-b from-yellow-400 to-yellow-500"
+
+            else
+                "bg-gray-400"
+    in
     div []
         [ viewColumnHeadline "seven days"
-        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40" ]
+        , div [ class (severity ++ " text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40") ]
             [ span [ class "flex items-center" ] [ text <| String.fromInt lastSeven ]
             , span [ class "pl-3 font-thin flex items-center" ] [ text "/ 950*" ]
             ]
@@ -165,7 +183,7 @@ viewAll : String -> Html Msg
 viewAll allInfected =
     div []
         [ viewColumnHeadline "total"
-        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40" ] [ text allInfected ]
+        , div [ class "bg-gray-400 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40" ] [ text allInfected ]
         ]
 
 
@@ -219,7 +237,7 @@ viewTotalHospitalizations : Int -> Html Msg
 viewTotalHospitalizations total =
     div []
         [ viewColumnHeadline "total"
-        , div [ class "bg-purple-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
+        , div [ class "bg-gray-400 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
             [ text (String.fromInt total) ]
         ]
 
@@ -251,7 +269,7 @@ viewDeaths deaths =
             [ class "grid grid-cols-1 md:grid-cols-1 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
             [ div []
                 [ viewColumnHeadline "total"
-                , div [ class "bg-gray-600 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
+                , div [ class "bg-gray-400 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
                     [ text (String.fromInt total) ]
                 ]
             ]
