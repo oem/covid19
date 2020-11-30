@@ -117,6 +117,7 @@ viewInfected model =
 viewToday : Maybe Int -> Html Msg
 viewToday newCases =
     let
+        latest : Int
         latest =
             case newCases of
                 Just value ->
@@ -125,6 +126,7 @@ viewToday newCases =
                 Nothing ->
                     0
 
+        severity : String
         severity =
             if latest > 400 then
                 "bg-red-500"
