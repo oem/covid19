@@ -25,7 +25,7 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-    { new = [ 104, 300, 252, 360, 363, 392, 237, 172, 433, 362, 659, 246 ]
+    { new = [ 150, 104, 300, 252, 360, 363, 392, 237, 172, 433, 362, 659, 246 ]
     , total = [ 24710, 24606, 24306, 24054, 23694 ]
     , deaths = [ Just 281, Just 281, Just 281, Just 281 ]
     , hopsitalizations = [ Just 312, Just 312, Just 309, Just 314, Just 312 ]
@@ -53,6 +53,21 @@ type Msg
 update : Msg -> Model -> Model
 update msg model =
     model
+
+
+cumsum : List Int -> List Int -> List Int
+cumsum acc next =
+    case next of
+        [] ->
+            acc
+
+        hd :: tl ->
+            case List.reverse acc of
+                [] ->
+                    cumsum [ hd ] tl
+
+                first :: last ->
+                    cumsum (acc ++ [ hd + first ]) tl
 
 
 
@@ -154,7 +169,7 @@ viewAll allInfected =
 
 viewColumnHeadline : String -> Html Msg
 viewColumnHeadline headline =
-    h3 [ class "tracking-widest" ] [ text headline ]
+    h3 [ class "tracking-wide" ] [ text headline ]
 
 
 viewHospitalizations : Model -> Html Msg
