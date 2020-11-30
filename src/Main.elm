@@ -315,10 +315,14 @@ viewDeaths deaths =
 viewSources : Html Msg
 viewSources =
     div [ class "pb-8" ]
-        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 text-black pb-1" ] [ text "Sources" ]
+        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 pb-1" ] [ text "Sources" ]
         , p []
             [ text "The source of the data for this dashboard is "
             , a [ class "font-extrabold", href "https://github.com/oem/Hamburg.jl" ] [ text "github.com/oem/Hamburg.jl" ]
-            , text ", which in turn gathers the data from the RKI and Hamburg.de. See the github page for more detailed information on the data sources."
+            , text ", which in turn gathers the data from the "
+            , a [ class "font-extrabold", href "https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Situationsberichte/Gesamt.html" ] [ text "Robert Koch Institut" ]
+            , text " and "
+            , a [ class "font-extrabold", href "https://www.hamburg.de/corona-zahlen" ] [ text "hamburg.de" ]
+            , text ". See the github page for more detailed information on the data sources."
             ]
         ]
