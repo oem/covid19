@@ -132,16 +132,16 @@ viewToday newCases =
                 "bg-red-500"
 
             else if latest > 250 then
-                "bg-gradient-to-b from-red-400 to-red-500"
+                "bg-red-500"
 
-            else if latest > 90 then
-                "bg-gradient-to-b from-yellow-400 to-yellow-500"
+            else if latest > 100 then
+                "bg-red-400"
 
             else if latest > 30 then
-                "bg-gradient-to-b from-yellow-300 to-yellow-400"
+                "bg-purple-500"
 
             else
-                "bg-gray-400"
+                "bg-gray-300"
     in
     div []
         [ viewColumnHeadline "today"
@@ -156,19 +156,19 @@ viewWeek lastSeven =
         severity : String
         severity =
             if lastSeven > 1400 then
-                "bg-red-600"
+                "bg-gradient-to-b from-red-500 to-red-600"
 
             else if lastSeven > 900 then
                 "bg-red-500"
 
             else if lastSeven > 700 then
-                "bg-gradient-to-b from-red-400 to-red-500"
+                "bg-red-400"
 
             else if lastSeven > 300 then
-                "bg-gradient-to-b from-yellow-400 to-yellow-500"
+                "bg-purple-500"
 
             else
-                "bg-gray-400"
+                "bg-gray-300"
     in
     div []
         [ viewColumnHeadline "seven days"
@@ -183,7 +183,7 @@ viewAll : String -> Html Msg
 viewAll allInfected =
     div []
         [ viewColumnHeadline "total"
-        , div [ class "bg-gray-400 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40" ] [ text allInfected ]
+        , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40" ] [ text allInfected ]
         ]
 
 
@@ -235,18 +235,54 @@ viewHospitalizations model =
 
 viewTotalHospitalizations : Int -> Html Msg
 viewTotalHospitalizations total =
+    let
+        severity : String
+        severity =
+            if total > 600 then
+                "bg-red-600"
+
+            else if total > 400 then
+                "bg-red-500"
+
+            else if total > 350 then
+                "bg-red-400"
+
+            else if total > 300 then
+                "bg-purple-500"
+
+            else
+                "bg-gray-300"
+    in
     div []
         [ viewColumnHeadline "total"
-        , div [ class "bg-gray-400 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
+        , div [ class (severity ++ " text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40") ]
             [ text (String.fromInt total) ]
         ]
 
 
 viewIntensivecare : Int -> Html Msg
 viewIntensivecare total =
+    let
+        severity : String
+        severity =
+            if total > 110 then
+                "bg-red-600"
+
+            else if total > 80 then
+                "bg-red-500"
+
+            else if total > 60 then
+                "bg-red-400"
+
+            else if total > 30 then
+                "bg-purple-500"
+
+            else
+                "bg-gray-300"
+    in
     div []
         [ viewColumnHeadline "intensivecare"
-        , div [ class "bg-pink-400 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
+        , div [ class (severity ++ " text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40") ]
             [ text (String.fromInt total) ]
         ]
 
@@ -269,7 +305,7 @@ viewDeaths deaths =
             [ class "grid grid-cols-1 md:grid-cols-1 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
             [ div []
                 [ viewColumnHeadline "total"
-                , div [ class "bg-gray-400 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
+                , div [ class "bg-red-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
                     [ text (String.fromInt total) ]
                 ]
             ]
