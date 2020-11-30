@@ -4,6 +4,7 @@ import Browser
 import Html exposing (Html, a, button, div, h1, h2, h3, p, span, text)
 import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
+import Http
 
 
 
@@ -17,6 +18,12 @@ type alias Model =
     , hospitalizations : List (Maybe Int)
     , intensivecare : List (Maybe Int)
     }
+
+
+type Status
+    = Loading
+    | Failure
+    | Success String
 
 
 
@@ -55,21 +62,6 @@ update msg model =
     model
 
 
-cumsum : List Int -> List Int -> List Int
-cumsum acc next =
-    case next of
-        [] ->
-            acc
-
-        hd :: tl ->
-            case List.reverse acc of
-                [] ->
-                    cumsum [ hd ] tl
-
-                first :: last ->
-                    cumsum (acc ++ [ hd + first ]) tl
-
-
 
 -- VIEW
 
@@ -83,6 +75,58 @@ view model =
         , viewDeaths model.deaths
         , viewSources
         ]
+
+
+type Cell
+    = Today (Maybe Int)
+    | SevenDays Int
+    | Hospitalizations (Maybe Int)
+    | Intensivecare (Maybe Int)
+
+
+severityClass : Cell -> String
+severityClass cell =
+    let
+        normalized =
+            case cell of
+                Today Nothing ->
+                    0
+
+                Today (Just value) ->
+                    toFloat value / 180
+
+                SevenDays value ->
+                    toFloat value / 950
+
+                Intensivecare Nothing ->
+                    0
+
+                Intensivecare (Just value) ->
+                    toFloat value / 80
+
+                Hospitalizations Nothing ->
+                    0
+
+                Hospitalizations (Just value) ->
+                    toFloat value / 650
+
+        severity =
+            if normalized > 1 then
+                "bg-gradient-to-b from-red-500 to-red-600"
+
+            else if normalized > 0.9 then
+                "bg-red-500"
+
+            else if normalized > 0.5 then
+                "bg-red-400"
+
+            else if normalized > 0.2 then
+                "bg-purple-500"
+
+            else
+                "bg-gray-300"
+    in
+    severity
 
 
 viewInfected : Model -> Html Msg
@@ -128,20 +172,7 @@ viewToday newCases =
 
         severity : String
         severity =
-            if latest > 400 then
-                "bg-red-500"
-
-            else if latest > 250 then
-                "bg-red-500"
-
-            else if latest > 100 then
-                "bg-red-400"
-
-            else if latest > 30 then
-                "bg-purple-500"
-
-            else
-                "bg-gray-300"
+            severityClass (Today newCases)
     in
     div []
         [ viewColumnHeadline "today"
@@ -155,20 +186,7 @@ viewWeek lastSeven =
     let
         severity : String
         severity =
-            if lastSeven > 1400 then
-                "bg-gradient-to-b from-red-500 to-red-600"
-
-            else if lastSeven > 900 then
-                "bg-red-500"
-
-            else if lastSeven > 700 then
-                "bg-red-400"
-
-            else if lastSeven > 300 then
-                "bg-purple-500"
-
-            else
-                "bg-gray-300"
+            severityClass (SevenDays lastSeven)
     in
     div []
         [ viewColumnHeadline "seven days"
@@ -213,77 +231,60 @@ viewHospitalizations model =
 
                 Nothing ->
                     0
-
-        intensivecare : Int
-        intensivecare =
-            case getLatestMaybe model.intensivecare of
-                Just value ->
-                    value
-
-                Nothing ->
-                    0
     in
     div [ class "pb-8" ]
         [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 pb-1" ] [ text "Hospitalizations" ]
         , div
             [ class "grid grid-cols-1 md:grid-cols-2 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
-            [ viewIntensivecare intensivecare
-            , viewTotalHospitalizations hospitalizations
+            [ viewIntensivecare (getLatestMaybe model.intensivecare)
+            , viewTotalHospitalizations (getLatestMaybe model.hospitalizations)
             ]
         ]
 
 
-viewTotalHospitalizations : Int -> Html Msg
+viewTotalHospitalizations : Maybe Int -> Html Msg
 viewTotalHospitalizations total =
     let
+        amount : String
+        amount =
+            case total of
+                Nothing ->
+                    ""
+
+                Just value ->
+                    String.fromInt value
+
         severity : String
         severity =
-            if total > 600 then
-                "bg-red-600"
-
-            else if total > 400 then
-                "bg-red-500"
-
-            else if total > 350 then
-                "bg-red-400"
-
-            else if total > 300 then
-                "bg-purple-500"
-
-            else
-                "bg-gray-300"
+            severityClass (Hospitalizations total)
     in
     div []
         [ viewColumnHeadline "total"
         , div [ class (severity ++ " text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40") ]
-            [ text (String.fromInt total) ]
+            [ text amount ]
         ]
 
 
-viewIntensivecare : Int -> Html Msg
+viewIntensivecare : Maybe Int -> Html Msg
 viewIntensivecare total =
     let
+        amount : String
+        amount =
+            case total of
+                Nothing ->
+                    ""
+
+                Just value ->
+                    String.fromInt value
+
         severity : String
         severity =
-            if total > 110 then
-                "bg-red-600"
-
-            else if total > 80 then
-                "bg-red-500"
-
-            else if total > 60 then
-                "bg-red-400"
-
-            else if total > 30 then
-                "bg-purple-500"
-
-            else
-                "bg-gray-300"
+            severityClass (Intensivecare total)
     in
     div []
         [ viewColumnHeadline "intensivecare"
         , div [ class (severity ++ " text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40") ]
-            [ text (String.fromInt total) ]
+            [ text amount ]
         ]
 
 
@@ -319,10 +320,10 @@ viewSources =
         , p []
             [ text "The source of the data for this dashboard is "
             , a [ class "font-extrabold", href "https://github.com/oem/Hamburg.jl" ] [ text "github.com/oem/Hamburg.jl" ]
-            , text ", which in turn gathers the data from the "
+            , text ", which in turn gathers its data from the "
             , a [ class "font-extrabold", href "https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Situationsberichte/Gesamt.html" ] [ text "Robert Koch Institut" ]
             , text " and "
             , a [ class "font-extrabold", href "https://www.hamburg.de/corona-zahlen" ] [ text "hamburg.de" ]
-            , text ". See the github page for more detailed information on the data sources."
+            , text "."
             ]
         ]
