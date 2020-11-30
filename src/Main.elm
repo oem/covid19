@@ -205,12 +205,13 @@ viewIntensivecare total =
 viewDeaths : List (Maybe Int) -> Html Msg
 viewDeaths deaths =
     let
+        total : String
         total =
             case List.head deaths of
-                Just value ->
-                    case value of
-                        Just num ->
-                            String.fromInt num
+                Just head ->
+                    case head of
+                        Just value ->
+                            String.fromInt value
 
                         Nothing ->
                             ""
