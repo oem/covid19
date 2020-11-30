@@ -222,16 +222,6 @@ getLatestMaybe list =
 
 viewHospitalizations : Model -> Html Msg
 viewHospitalizations model =
-    let
-        hospitalizations : Int
-        hospitalizations =
-            case getLatestMaybe model.hospitalizations of
-                Just value ->
-                    value
-
-                Nothing ->
-                    0
-    in
     div [ class "pb-8" ]
         [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 pb-1" ] [ text "Hospitalizations" ]
         , div
