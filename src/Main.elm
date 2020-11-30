@@ -80,7 +80,7 @@ view model =
         [ h1 [ class "text-3xl font-black tracking-tight pb-4 pt-14" ] [ text "COVID-19 in Hamburg" ]
         , viewInfected model
         , viewHospitalizations model
-        , viewDeaths model
+        , viewDeaths model.deaths
         , viewSources
         ]
 
@@ -202,8 +202,22 @@ viewIntensivecare total =
         ]
 
 
-viewDeaths : Model -> Html Msg
-viewDeaths model =
+viewDeaths : List (Maybe Int) -> Html Msg
+viewDeaths deaths =
+    let
+        total =
+            case List.head deaths of
+                Just value ->
+                    case value of
+                        Just num ->
+                            String.fromInt num
+
+                        Nothing ->
+                            ""
+
+                Nothing ->
+                    ""
+    in
     div [ class "pb-8" ]
         [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 pb-1" ] [ text "Deaths" ]
         , div
@@ -211,7 +225,7 @@ viewDeaths model =
             [ div []
                 [ viewColumnHeadline "total"
                 , div [ class "bg-gray-600 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
-                    [ text "34" ]
+                    [ text total ]
                 ]
             ]
         ]
