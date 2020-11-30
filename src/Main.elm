@@ -14,7 +14,7 @@ type alias Model =
     { new : List Int
     , total : List Int
     , deaths : List (Maybe Int)
-    , hopsitalizations : List (Maybe Int)
+    , hospitalizations : List (Maybe Int)
     , intensivecare : List (Maybe Int)
     }
 
@@ -28,7 +28,7 @@ initialModel =
     { new = [ 150, 104, 300, 252, 360, 363, 392, 237, 172, 433, 362, 659, 246 ]
     , total = [ 24710, 24606, 24306, 24054, 23694 ]
     , deaths = [ Just 281, Just 281, Just 281, Just 281 ]
-    , hopsitalizations = [ Just 312, Just 312, Just 309, Just 314, Just 312 ]
+    , hospitalizations = [ Just 312, Just 312, Just 309, Just 314, Just 312 ]
     , intensivecare = [ Just 79, Just 79, Just 79, Just 79, Just 88 ]
     }
 
@@ -171,17 +171,46 @@ viewAll allInfected =
 
 viewColumnHeadline : String -> Html Msg
 viewColumnHeadline headline =
-    h3 [ class "tracking-wide" ] [ text headline ]
+    h3 [ class "tracking-tight" ] [ text headline ]
+
+
+getLatestMaybe : List (Maybe Int) -> Maybe Int
+getLatestMaybe list =
+    case List.head list of
+        Just head ->
+            head
+
+        Nothing ->
+            Nothing
 
 
 viewHospitalizations : Model -> Html Msg
 viewHospitalizations model =
+    let
+        hospitalizations : Int
+        hospitalizations =
+            case getLatestMaybe model.hospitalizations of
+                Just value ->
+                    value
+
+                Nothing ->
+                    0
+
+        intensivecare : Int
+        intensivecare =
+            case getLatestMaybe model.intensivecare of
+                Just value ->
+                    value
+
+                Nothing ->
+                    0
+    in
     div [ class "pb-8" ]
         [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 pb-1" ] [ text "Hospitalizations" ]
         , div
             [ class "grid grid-cols-1 md:grid-cols-2 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
-            [ viewIntensivecare 12
-            , viewTotalHospitalizations 34
+            [ viewIntensivecare intensivecare
+            , viewTotalHospitalizations hospitalizations
             ]
         ]
 
@@ -191,7 +220,7 @@ viewTotalHospitalizations total =
     div []
         [ viewColumnHeadline "total"
         , div [ class "bg-purple-500 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
-            [ text "34" ]
+            [ text (String.fromInt total) ]
         ]
 
 
@@ -200,26 +229,21 @@ viewIntensivecare total =
     div []
         [ viewColumnHeadline "intensivecare"
         , div [ class "bg-pink-400 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
-            [ text "34" ]
+            [ text (String.fromInt total) ]
         ]
 
 
 viewDeaths : List (Maybe Int) -> Html Msg
 viewDeaths deaths =
     let
-        total : String
+        total : Int
         total =
-            case List.head deaths of
-                Just head ->
-                    case head of
-                        Just value ->
-                            String.fromInt value
-
-                        Nothing ->
-                            ""
+            case getLatestMaybe deaths of
+                Just value ->
+                    value
 
                 Nothing ->
-                    ""
+                    0
     in
     div [ class "pb-8" ]
         [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 pb-1" ] [ text "Deaths" ]
@@ -228,7 +252,7 @@ viewDeaths deaths =
             [ div []
                 [ viewColumnHeadline "total"
                 , div [ class "bg-gray-600 text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40" ]
-                    [ text total ]
+                    [ text (String.fromInt total) ]
                 ]
             ]
         ]
