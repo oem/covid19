@@ -110,7 +110,7 @@ viewInfected model =
             , viewAll allInfected
             ]
         , p [ class "text-xs pt-1 pb-1" ]
-            [ text "* The goverment will need to enact policies like lockdowns after this threshold." ]
+            [ text "* The goverment will consider restrictive policies after this threshold." ]
         ]
 
 
