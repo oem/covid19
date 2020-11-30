@@ -112,7 +112,7 @@ severityClass cell =
 
         severity =
             if normalized > 1 then
-                "bg-gradient-to-b from-red-500 to-red-600"
+                "bg-gradient-to-b from-red-600 to-red-500"
 
             else if normalized > 0.9 then
                 "bg-red-500"
