@@ -5,6 +5,8 @@ import Html exposing (Html, a, button, div, h1, h2, h3, p, span, text)
 import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
 import Http
+import Json.Decode as Decode exposing (Decoder, int, list, maybe, string)
+import Json.Decode.Pipeline exposing (required)
 
 
 
@@ -14,11 +16,7 @@ import Http
 initialModel : Model
 initialModel =
     { status = Loading
-    , new = [ 150, 104, 300, 252, 360, 363, 392, 237, 172, 433, 362, 659, 246 ]
-    , total = [ 24710, 24606, 24306, 24054, 23694 ]
-    , deaths = [ Just 281, Just 281, Just 281, Just 281 ]
-    , hospitalizations = [ Just 312, Just 312, Just 309, Just 314, Just 312 ]
-    , intensivecare = [ Just 79, Just 79, Just 79, Just 79, Just 88 ]
+    , dataset = { new = [], total = [], deaths = [], hospitalizations = [], intensivecare = [] }
     }
 
 
@@ -35,7 +33,7 @@ main =
 type Status
     = Loading
     | Errored
-    | Loaded String
+    | Loaded
 
 
 
@@ -44,7 +42,12 @@ type Status
 
 type alias Model =
     { status : Status
-    , new : List Int
+    , dataset : Dataset
+    }
+
+
+type alias Dataset =
+    { new : List Int
     , total : List Int
     , deaths : List (Maybe Int)
     , hospitalizations : List (Maybe Int)
@@ -64,7 +67,7 @@ init _ =
 
 
 type Msg
-    = GotData (Result Http.Error String)
+    = GotData (Result Http.Error Dataset)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -73,7 +76,7 @@ update msg model =
         GotData result ->
             case result of
                 Ok data ->
-                    ( { model | status = Loaded data }, Cmd.none )
+                    ( { model | status = Loaded, dataset = data }, Cmd.none )
 
                 Err _ ->
                     ( { model | status = Errored }, Cmd.none )
@@ -98,11 +101,10 @@ view model =
         [ h1 [ class "text-3xl font-black tracking-tight pb-4 pt-14" ] [ text "COVID-19 in Hamburg" ]
         , div [] <|
             case model.status of
-                Loaded raw ->
-                    [ text raw
-                    , viewInfected model
+                Loaded ->
+                    [ viewInfected model
                     , viewHospitalizations model
-                    , viewDeaths model.deaths
+                    , viewDeaths model.dataset.deaths
                     , viewSources
                     ]
 
@@ -183,7 +185,7 @@ viewInfected model =
     let
         allInfected : String
         allInfected =
-            case model.total of
+            case model.dataset.total of
                 newest :: older ->
                     String.fromInt newest
 
@@ -192,13 +194,13 @@ viewInfected model =
 
         lastSeven : Int
         lastSeven =
-            List.sum <| List.take 7 model.new
+            List.sum <| List.take 7 model.dataset.new
     in
     div [ class "pb-8" ]
         [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 pb-1" ] [ text "New Infections" ]
         , div
             [ class "grid grid-cols-1 md:grid-cols-3 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
-            [ viewToday <| List.head model.new
+            [ viewToday <| List.head model.dataset.new
             , viewWeek lastSeven
             , viewAll allInfected
             ]
@@ -275,8 +277,8 @@ viewHospitalizations model =
         [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 pb-1" ] [ text "Hospitalizations" ]
         , div
             [ class "grid grid-cols-1 md:grid-cols-2 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
-            [ viewIntensivecare (getLatestMaybe model.intensivecare)
-            , viewTotalHospitalizations (getLatestMaybe model.hospitalizations)
+            [ viewIntensivecare (getLatestMaybe model.dataset.intensivecare)
+            , viewTotalHospitalizations (getLatestMaybe model.dataset.hospitalizations)
             ]
         ]
 
@@ -381,21 +383,15 @@ fetchInfected : Cmd Msg
 fetchInfected =
     Http.get
         { url = dataUrl
-        , expect = Http.expectString GotData
+        , expect = Http.expectJson GotData datasetDecoder
         }
 
 
-{-| return the nth element of a list
--}
-elementAt : List a -> Int -> Maybe a
-elementAt list n =
-    case list of
-        [] ->
-            Nothing
-
-        x :: xs ->
-            if n == 1 then
-                Just x
-
-            else
-                elementAt xs (n - 1)
+datasetDecoder : Decoder Dataset
+datasetDecoder =
+    Decode.succeed Dataset
+        |> required "new" (list int)
+        |> required "total" (list int)
+        |> required "deaths" (list (maybe int))
+        |> required "hospitalizations" (list (maybe int))
+        |> required "intensivecare" (list (maybe int))
