@@ -99,7 +99,8 @@ view model =
         , div [] <|
             case model.status of
                 Loaded raw ->
-                    [ viewInfected model
+                    [ text raw
+                    , viewInfected model
                     , viewHospitalizations model
                     , viewDeaths model.deaths
                     , viewSources
@@ -373,7 +374,7 @@ viewSources =
 
 dataUrl : String
 dataUrl =
-    "https://raw.githubusercontent.com/oem/Hamburg.jl/main/src/covid-19/infected.csv"
+    "https://raw.githubusercontent.com/oem/Hamburg.jl/main/src/covid-19/infected.json"
 
 
 fetchInfected : Cmd Msg
