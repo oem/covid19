@@ -8,31 +8,13 @@ import Http
 
 
 
--- MODEL
-
-
-type alias Model =
-    { new : List Int
-    , total : List Int
-    , deaths : List (Maybe Int)
-    , hospitalizations : List (Maybe Int)
-    , intensivecare : List (Maybe Int)
-    }
-
-
-type Status
-    = Loading
-    | Failure
-    | Success String
-
-
-
 -- MAIN
 
 
 initialModel : Model
 initialModel =
-    { new = [ 150, 104, 300, 252, 360, 363, 392, 237, 172, 433, 362, 659, 246 ]
+    { status = Loading
+    , new = [ 150, 104, 300, 252, 360, 363, 392, 237, 172, 433, 362, 659, 246 ]
     , total = [ 24710, 24606, 24306, 24054, 23694 ]
     , deaths = [ Just 281, Just 281, Just 281, Just 281 ]
     , hospitalizations = [ Just 312, Just 312, Just 309, Just 314, Just 312 ]
@@ -42,11 +24,39 @@ initialModel =
 
 main : Program () Model Msg
 main =
-    Browser.sandbox
-        { init = initialModel
-        , view = view
+    Browser.element
+        { init = init
         , update = update
+        , view = view
+        , subscriptions = subscriptions
         }
+
+
+type Status
+    = Loading
+    | Errored
+    | Loaded String
+
+
+
+-- MODEL
+
+
+type alias Model =
+    { status : Status
+    , new : List Int
+    , total : List Int
+    , deaths : List (Maybe Int)
+    , hospitalizations : List (Maybe Int)
+    , intensivecare : List (Maybe Int)
+    }
+
+
+init : () -> ( Model, Cmd Msg )
+init _ =
+    ( initialModel
+    , fetchInfected
+    )
 
 
 
@@ -54,12 +64,28 @@ main =
 
 
 type Msg
-    = DataLoaded
+    = GotData (Result Http.Error String)
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    model
+    case msg of
+        GotData result ->
+            case result of
+                Ok data ->
+                    ( { model | status = Loaded data }, Cmd.none )
+
+                Err _ ->
+                    ( { model | status = Errored }, Cmd.none )
+
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
 
 
 
@@ -70,10 +96,20 @@ view : Model -> Html Msg
 view model =
     div [ class "container p-4 md:p-6 mx-auto max-w-6xl" ]
         [ h1 [ class "text-3xl font-black tracking-tight pb-4 pt-14" ] [ text "COVID-19 in Hamburg" ]
-        , viewInfected model
-        , viewHospitalizations model
-        , viewDeaths model.deaths
-        , viewSources
+        , div [] <|
+            case model.status of
+                Loaded raw ->
+                    [ viewInfected model
+                    , viewHospitalizations model
+                    , viewDeaths model.deaths
+                    , viewSources
+                    ]
+
+                Loading ->
+                    [ text "Loading data..." ]
+
+                Errored ->
+                    viewErrored
         ]
 
 
@@ -127,6 +163,18 @@ severityClass cell =
                 "bg-gray-300"
     in
     severity
+
+
+viewErrored : List (Html Msg)
+viewErrored =
+    [ p [] [ text "Sorry, I was unable to load the data." ]
+    , p [] [ text "It is likely a connectivity issue, but there might also be a chance that the data is currently not available." ]
+    , p []
+        [ text "If you would like to check for yourself, I am trying to fetch the data from "
+        , a [ class "font-bold", href dataUrl ] [ text "github.com/oem/Hamburg.jl" ]
+        , text "."
+        ]
+    ]
 
 
 viewInfected : Model -> Html Msg
@@ -317,3 +365,36 @@ viewSources =
             , text "."
             ]
         ]
+
+
+
+-- HTTP
+
+
+dataUrl : String
+dataUrl =
+    "https://raw.githubusercontent.com/oem/Hamburg.jl/main/src/covid-19/infected.csv"
+
+
+fetchInfected : Cmd Msg
+fetchInfected =
+    Http.get
+        { url = dataUrl
+        , expect = Http.expectString GotData
+        }
+
+
+{-| return the nth element of a list
+-}
+elementAt : List a -> Int -> Maybe a
+elementAt list n =
+    case list of
+        [] ->
+            Nothing
+
+        x :: xs ->
+            if n == 1 then
+                Just x
+
+            else
+                elementAt xs (n - 1)
