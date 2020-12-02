@@ -1,4 +1,4 @@
-module Main exposing (main)
+module Dashboard exposing (main)
 
 import Browser
 import Html exposing (Html, a, button, div, h1, h2, h3, p, span, text)

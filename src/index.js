@@ -1,2 +1,2 @@
-import { Elm } from './Main.elm';
-Elm.Main.init({ node: document.querySelector('main') });
+import { Elm } from "./Dashboard.elm";
+Elm.Dashboard.init({ node: document.querySelector("main") });
