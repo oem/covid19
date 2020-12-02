@@ -1,4 +1,4 @@
-module Dashboard exposing (main)
+module Dashboard exposing (Cell(..), main, severityClass)
 
 import Browser
 import Html exposing (Html, a, button, div, h1, h2, h3, p, span, text)
