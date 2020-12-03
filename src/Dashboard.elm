@@ -132,7 +132,7 @@ severityClass cell =
                     0
 
                 Today (Just value) ->
-                    toFloat value / 180
+                    toFloat value / 136
 
                 SevenDays value ->
                     toFloat value / 950
