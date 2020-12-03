@@ -26,19 +26,19 @@ severityClassToday3 =
 severityClassToday4 : Test
 severityClassToday4 =
     test "produces bg-red-400 for Today Just 110"
-        (\_ -> Expect.equal "bg-red-400" (severityClass <| Today (Just 80)))
+        (\_ -> Expect.equal "bg-red-400" (severityClass <| Today <| Just 80))
 
 
 severityClassToday5 : Test
 severityClassToday5 =
     test "produces bg-purple-500 for Today Just 80"
-        (\_ -> Expect.equal "bg-purple-500" (severityClass <| Today (Just 60)))
+        (\_ -> Expect.equal "bg-purple-500" (severityClass <| Today <| Just 60))
 
 
 severityClassToday6 : Test
 severityClassToday6 =
     test "produces bg-gray-300 for Today Just 20"
-        (\_ -> Expect.equal "bg-gray-300" (severityClass <| Today (Just 20)))
+        (\_ -> Expect.equal "bg-gray-300" (severityClass <| Today <| Just 20))
 
 
 severityClassSevenDays : Test
@@ -50,10 +50,10 @@ severityClassSevenDays =
 severityClassIntensivecare : Test
 severityClassIntensivecare =
     test "produces bg-red-500 for Intensivecare Just 80"
-        (\_ -> Expect.equal "bg-red-500" (severityClass <| Intensivecare (Just 80)))
+        (\_ -> Expect.equal "bg-red-500" (severityClass <| Intensivecare <| Just 80))
 
 
 severityClassHospitalizations : Test
 severityClassHospitalizations =
     test "produces bg-red-500 for Hospitalizations Just 650"
-        (\_ -> Expect.equal "bg-red-500" (severityClass <| Hospitalizations (Just 650)))
+        (\_ -> Expect.equal "bg-red-500" (severityClass <| Hospitalizations <| Just 650))
