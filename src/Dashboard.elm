@@ -16,7 +16,13 @@ import Json.Decode.Pipeline exposing (required)
 initialModel : Model
 initialModel =
     { status = Loading
-    , dataset = { new = [], total = [], deaths = [], hospitalizations = [], intensivecare = [] }
+    , dataset =
+        { new = []
+        , total = []
+        , deaths = []
+        , hospitalizations = []
+        , intensivecare = []
+        }
     }
 
 
