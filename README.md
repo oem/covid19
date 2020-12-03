@@ -2,7 +2,7 @@
 
 A dashboard showing the current Covid-19 numbers in Hamburg, Germany.
 
-The dashboard is color-coded to visualize the current severity.
+The [dashboard](https://oem.github.io/covid19/) is color-coded to visualize the current severity.
 
 ![example dashboard](docs/dashboard.png)
 
