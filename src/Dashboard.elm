@@ -13,6 +13,23 @@ import Json.Decode.Pipeline exposing (required)
 -- MAIN
 
 
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = init
+        , update = update
+        , view = view
+        , subscriptions = subscriptions
+        }
+
+
+init : () -> ( Model, Cmd Msg )
+init _ =
+    ( initialModel
+    , fetchInfected
+    )
+
+
 initialModel : Model
 initialModel =
     { status = Loading
@@ -26,22 +43,6 @@ initialModel =
     }
 
 
-main : Program () Model Msg
-main =
-    Browser.element
-        { init = init
-        , update = update
-        , view = view
-        , subscriptions = subscriptions
-        }
-
-
-type Status
-    = Loading
-    | Errored
-    | Loaded
-
-
 
 -- MODEL
 
@@ -52,6 +53,12 @@ type alias Model =
     }
 
 
+type Status
+    = Loading
+    | Errored
+    | Loaded
+
+
 type alias Dataset =
     { new : List Int
     , total : List Int
@@ -59,13 +66,6 @@ type alias Dataset =
     , hospitalizations : List (Maybe Int)
     , intensivecare : List (Maybe Int)
     }
-
-
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( initialModel
-    , fetchInfected
-    )
 
 
 
