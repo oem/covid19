@@ -60,8 +60,8 @@ type Status
 
 
 type alias Dataset =
-    { new : List Int
-    , total : List Int
+    { new : List (Maybe Int)
+    , total : List (Maybe Int)
     , deaths : List (Maybe Int)
     , hospitalizations : List (Maybe Int)
     , intensivecare : List (Maybe Int)
@@ -124,7 +124,7 @@ view model =
 
 type Cell
     = Today (Maybe Int)
-    | SevenDays Int
+    | SevenDays (Maybe Int)
     | Hospitalizations (Maybe Int)
     | Intensivecare (Maybe Int)
 
@@ -140,8 +140,11 @@ severityClass cell =
                 Today (Just value) ->
                     toFloat value / 136
 
-                SevenDays value ->
+                SevenDays (Just value) ->
                     toFloat value / 950
+
+                SevenDays Nothing ->
+                    0
 
                 Intensivecare Nothing ->
                     0
@@ -193,20 +196,42 @@ viewInfected model =
         allInfected =
             case model.dataset.total of
                 newest :: older ->
-                    String.fromInt newest
+                    case newest of
+                        Just v ->
+                            String.fromInt v
+
+                        Nothing ->
+                            ""
 
                 [] ->
                     ""
 
-        lastSeven : Int
+        justValue : Maybe Int -> Int
+        justValue value =
+            case value of
+                Just v ->
+                    v
+
+                Nothing ->
+                    0
+
+        maybeSum : List (Maybe Int) -> Maybe Int
+        maybeSum list =
+            if List.any (\a -> a == Nothing) list then
+                Nothing
+
+            else
+                Just (List.sum (List.map justValue list))
+
+        lastSeven : Maybe Int
         lastSeven =
-            List.sum <| List.take 7 model.dataset.new
+            List.take 7 model.dataset.new |> maybeSum
     in
     div [ class "pb-8" ]
         [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 pb-1" ] [ text "New Infections" ]
         , div
             [ class "grid grid-cols-1 md:grid-cols-3 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
-            [ viewToday <| List.head model.dataset.new
+            [ viewToday <| getLatestMaybe model.dataset.new
             , viewWeek lastSeven
             , viewAll allInfected
             ]
@@ -238,9 +263,17 @@ viewToday newCases =
         ]
 
 
-viewWeek : Int -> Html Msg
+viewWeek : Maybe Int -> Html Msg
 viewWeek lastSeven =
     let
+        sevenText =
+            case lastSeven of
+                Just v ->
+                    String.fromInt v
+
+                Nothing ->
+                    ""
+
         severity : String
         severity =
             severityClass (SevenDays lastSeven)
@@ -248,7 +281,7 @@ viewWeek lastSeven =
     div []
         [ viewColumnHeadline "seven days"
         , div [ class (severity ++ " text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40") ]
-            [ span [ class "flex items-center" ] [ text <| String.fromInt lastSeven ]
+            [ span [ class "flex items-center" ] [ text sevenText ]
             , span [ class "pl-3 font-thin flex items-center" ] [ text "/ 950*" ]
             ]
         ]
@@ -396,8 +429,8 @@ fetchInfected =
 datasetDecoder : Decoder Dataset
 datasetDecoder =
     Decode.succeed Dataset
-        |> required "new" (list int)
-        |> required "total" (list int)
+        |> required "new" (list (maybe int))
+        |> required "total" (list (maybe int))
         |> required "deaths" (list (maybe int))
         |> required "hospitalizations" (list (maybe int))
         |> required "intensivecare" (list (maybe int))
