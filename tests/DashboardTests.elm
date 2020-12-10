@@ -44,7 +44,7 @@ severityClassToday6 =
 severityClassSevenDays : Test
 severityClassSevenDays =
     test "produces bg-red-500 for SevenDays 950"
-        (\_ -> Expect.equal "bg-red-500" (severityClass <| SevenDays 950))
+        (\_ -> Expect.equal "bg-red-500" (severityClass <| SevenDays <| Just 950))
 
 
 severityClassIntensivecare : Test
