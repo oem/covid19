@@ -36,6 +36,8 @@ initialModel =
     , dataset =
         { new = []
         , total = []
+        , first_vaccination = []
+        , second_vaccination = []
         , deaths = []
         , hospitalizations = []
         , intensivecare = []
@@ -63,6 +65,8 @@ type alias Dataset =
     { new : List (Maybe Int)
     , total : List (Maybe Int)
     , deaths : List (Maybe Int)
+    , first_vaccination : List (Maybe Int)
+    , second_vaccination : List (Maybe Int)
     , hospitalizations : List (Maybe Int)
     , intensivecare : List (Maybe Int)
     }
@@ -110,6 +114,7 @@ view model =
                 Loaded ->
                     [ viewInfected model
                     , viewHospitalizations model
+                    , viewVaccinations model
                     , viewDeaths model.dataset.deaths
                     , viewSources
                     ]
@@ -127,6 +132,7 @@ type Cell
     | SevenDays (Maybe Int)
     | Hospitalizations (Maybe Int)
     | Intensivecare (Maybe Int)
+    | Vaccinations (Maybe Int)
 
 
 severityClass : Cell -> String
@@ -157,6 +163,19 @@ severityClass cell =
 
                 Hospitalizations (Just value) ->
                     toFloat value / 650
+
+                Vaccinations (Just value) ->
+                    if value < 895000 then
+                        1.0
+
+                    else if value < 1340000 then
+                        0.3
+
+                    else
+                        0.0
+
+                Vaccinations Nothing ->
+                    0
 
         severity =
             if normalized > 1 then
@@ -368,6 +387,41 @@ viewIntensivecare total =
         ]
 
 
+viewVaccinations : Model -> Html Msg
+viewVaccinations model =
+    div [ class "pb-8" ]
+        [ h2 [ class "text-2xl font-extrabold tracking-tight sm:text-4x1 pb-1" ] [ text "Vaccinations" ]
+        , div
+            [ class "grid grid-cols-1 md:grid-cols-2 gap-4 place-content-center font-bold uppercase text-3xl md:text-2xl" ]
+            [ viewVaccination (getLatestMaybe model.dataset.first_vaccination) "first dose"
+            , viewVaccination (getLatestMaybe model.dataset.second_vaccination) "second dose"
+            ]
+        ]
+
+
+viewVaccination : Maybe Int -> String -> Html Msg
+viewVaccination maybeTotal headline =
+    let
+        amount : String
+        amount =
+            case maybeTotal of
+                Nothing ->
+                    ""
+
+                Just value ->
+                    String.fromInt value
+
+        severity : String
+        severity =
+            severityClass (Vaccinations maybeTotal)
+    in
+    div []
+        [ viewColumnHeadline headline
+        , div [ class (severity ++ " text-center text-4xl text-white flex items-center justify-center font-black rounded-lg p-16 h-40") ]
+            [ text amount ]
+        ]
+
+
 viewDeaths : List (Maybe Int) -> Html Msg
 viewDeaths deaths =
     let
@@ -432,5 +486,7 @@ datasetDecoder =
         |> required "new" (list (maybe int))
         |> required "total" (list (maybe int))
         |> required "deaths" (list (maybe int))
+        |> required "first_vaccination" (list (maybe int))
+        |> required "second_vaccination" (list (maybe int))
         |> required "hospitalizations" (list (maybe int))
         |> required "intensivecare" (list (maybe int))
