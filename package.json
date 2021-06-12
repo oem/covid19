@@ -18,19 +18,16 @@
     "@parcel/packager-css": "^2.0.0-nightly.612",
     "@parcel/packager-html": "^2.0.0-nightly.612",
     "@parcel/transformer-css": "^2.0.0-nightly.612",
-    "@parcel/transformer-elm": "^2.0.0-nightly.2234",
+    "@parcel/transformer-elm": "^2.0.0-beta.2",
     "@parcel/transformer-html": "^2.0.0-nightly.612",
     "@parcel/transformer-postcss": "^2.0.0-nightly.612",
     "@parcel/transformer-posthtml": "^2.0.0-nightly.612",
-    "autoprefixer": "^9.8.6",
+    "autoprefixer": "^10.2.5",
     "elm": "^0.19.1-5",
     "elm-format": "^0.8.5",
-    "elm-hot": "^1.1.5",
-    "elm-test": "^0.19.1-revision4",
-    "node-elm-compiler": "^5.0.5",
-    "node-forge": ">=0.10.0",
-    "parcel": "^2.0.0-beta.1",
-    "postcss": "^8",
-    "tailwindcss": "^2.0.3"
+    "elm-test": "^0.19.1-revision6",
+    "parcel": "^2.0.0-beta.2",
+    "postcss": "^8.2.15",
+    "tailwindcss": "^2.1.2"
   }
 }
