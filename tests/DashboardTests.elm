@@ -1,7 +1,7 @@
 module DashboardTests exposing (..)
 
 import Dashboard exposing (Cell(..), severityClass)
-import Expect exposing (Expectation)
+import Expect exposing (..)
 import Test exposing (..)
 
 
