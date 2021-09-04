@@ -1,11 +1,10 @@
 module Dashboard exposing (Cell(..), main, severityClass)
 
 import Browser
-import Html exposing (Html, a, button, div, h1, h2, h3, p, span, text)
+import Html exposing (Html, a, div, h1, h2, h3, p, span, text)
 import Html.Attributes exposing (class, href)
-import Html.Events exposing (onClick)
 import Http
-import Json.Decode as Decode exposing (Decoder, int, list, maybe, string)
+import Json.Decode as Decode exposing (Decoder, int, list, maybe)
 import Json.Decode.Pipeline exposing (required)
 
 
@@ -97,7 +96,7 @@ update msg model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 
@@ -214,7 +213,7 @@ viewInfected model =
         allInfected : String
         allInfected =
             case model.dataset.total of
-                newest :: older ->
+                newest :: _ ->
                     case newest of
                         Just v ->
                             String.fromInt v
