@@ -167,7 +167,7 @@ severityClass cell =
                     if value < 895000 then
                         1.0
 
-                    else if value < 1340000 then
+                    else if value < 1500000 then
                         0.3
 
                     else
