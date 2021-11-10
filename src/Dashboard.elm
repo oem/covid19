@@ -300,7 +300,7 @@ viewWeek lastSeven =
         [ viewColumnHeadline "seven days"
         , div [ class (severity ++ " text-center text-4xl text-white flex items-center justify-center font-black rounded-lg h-40") ]
             [ span [ class "flex items-center" ] [ text sevenText ]
-            , span [ class "pl-3 font-thin flex items-center" ] [ text "/ 950*" ]
+            , span [ class "pl-3 font-thin flex items-center" ] [ text "/ 953*" ]
             ]
         ]
 
