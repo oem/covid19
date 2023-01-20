@@ -28,7 +28,7 @@
     "elm-test": "^0.19.1-revision6",
     "parcel": "^2.8.2",
     "postcss": "^8.2.15",
-    "tailwindcss": "^2.1.2",
+    "tailwindcss": "^2.2.19",
     "normalize-url": ">=4.5.1"
   }
 }
