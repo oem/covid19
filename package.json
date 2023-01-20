@@ -13,7 +13,7 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "@parcel/optimizer-cssnano": "^2.0.0-nightly.612",
+    "@parcel/optimizer-cssnano": "^2.8.3",
     "@parcel/optimizer-htmlnano": "^2.0.0-nightly.612",
     "@parcel/packager-css": "^2.0.0-nightly.612",
     "@parcel/packager-html": "^2.0.0-nightly.612",
